@@ -1,49 +1,56 @@
 require_relative 'piece'
 require_relative 'nil_piece'
 require_relative 'cursor'
+
 class Board 
-    attr_reader :grid 
-    START_POS = [
-        [0,0], [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],
-        [1,0], [1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[1,7],
-        [6,0], [6,1],[6,2],[6,3],[6,4],[6,5],[6,6],[6,7],
-        [7,0], [7,1],[7,2],[7,3],[7,4],[7,5],[7,6],[7,7]
-    ]
-    attr_reader :rows 
-    def initialize
-        @grid = Array.new(8) {Array.new(8, NilPiece.new)}
-        populate_grid
-    end
+  attr_reader :grid 
 
-    def move_piece(start_pos, end_pos)
-        self[start_pos], self[end_pos] = self[end_pos], self[start_pos]
+  SENTINEL = NilPiece.new
+  attr_reader :rows 
+  def initialize
+    
+    @grid = Array.new(8) {Array.new(8, SENTINEL)}
+    populate_grid
+  end
 
-    end
+  def move_piece(start_pos, end_pos)
+    self[start_pos], self[end_pos] = self[end_pos], self[start_pos]
 
-    def [](pos)
-        row, col = pos 
-        @grid[row][col]
-    end
+  end
 
-    def []=(pos, value)
-        row, col = pos 
-        @grid[row][col] = value 
-    end
+  def [](pos)
+    row, col = pos 
+    @grid[row][col]
+  end
 
-    private
-    #     def sentinel 
-    #         NullPiece.new 
-    #     end
+  def []=(pos, value)
+    row, col = pos 
+    @grid[row][col] = value 
+  end
 
-    def populate_grid 
-        START_POS.each do |pos|
-            self[pos] = Piece.new 
+  def populate_grid 
+    # iterate over every row in grid
+    grid.each_with_index do |row, row_idx|
+      # iterate over every col in grid
+      row.each_with_index do |piece, col_idx|
+        cur_pos = [row_idx, col_idx]
+        # initiate correct piece class in idx
+        if row_idx < 2 || row_idx > 5
+          self[cur_pos] = Piece.new(:x,cur_pos) 
+        else
+          self[cur_pos] = NilPiece.new("_", cur_pos)
         end
-    end
+      end
+    end          
 
+  end
+
+  # Checks if move is out of bounds 
+  def valid_pos?(pos) # [0, -1]
+    row, col = pos 
+    return false if row < 0 || row > 7
+    return false if col < 0 || col > 7
+    true 
+  end
 
 end
-
-board = Board.new 
-cursor = Cursor.new([0,0],board)
-cursor.get_input

@@ -24,10 +24,10 @@ KEYMAP = {
 }
 
 MOVES = {
-  left: [0, -1],
-  right: [0, 1],
-  up: [-1, 0],
-  down: [1, 0]
+  left:  [0, -1],
+  right: [0,  1],
+  up:    [-1, 0],
+  down:  [1,  0]
 }
 
 class Cursor
@@ -90,9 +90,23 @@ class Cursor
         exit
     end
   end
-
+  # checks if new pos valid, if valid updates cursor_pos
   def update_pos(diff)
+    # @cursor_pos = diff if @board.valid_pos?(diff)
+    pos_at_diff = add_pos_arrs(diff, @cursor_pos)
+    if @board.valid_pos?(pos_at_diff)
+      @cursor_pos = pos_at_diff
+    end
+  end
 
+  def add_pos_arrs(diff, cursor_pos)
+    new_pos = cursor_pos.dup
+    l_val = diff[0]
+    r_val = diff[1]
+    new_pos[0] += l_val
+    new_pos[1] += r_val
+
+    new_pos
   end
 end
 
