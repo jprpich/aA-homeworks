@@ -1,10 +1,2 @@
 class NilPiece < Piece 
-
-
-
-
-
-
-
-
 end
